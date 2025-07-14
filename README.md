@@ -12,7 +12,7 @@ Meningkatkan pemahaman siswa terhadap letak masing-masing lambang sila dalam lam
   - Jika salah, muncul pop-up merah.
   - Jika semua benar, muncul pop-up hijau.
 - Tidak menggunakan library eksternal selain Bootstrap CSS.
-- Saat ini masih pengembangan agar responsif terhadap berbagaiukuran layar.
+- Urutan icon sila-sila random ketika refresh.
 
 ## 🧩 Struktur Posisi Sila
 
@@ -43,9 +43,9 @@ Meningkatkan pemahaman siswa terhadap letak masing-masing lambang sila dalam lam
 2. Seret simbol sila ke perisai sesuai tempatnya.
 
 📸 Screenshot
-1. <img width="1013" height="891" alt="image" src="https://github.com/user-attachments/assets/3cff3589-65c6-476b-843e-1c6fb7bd0e0f" />
-2. <img width="846" height="889" alt="image" src="https://github.com/user-attachments/assets/c9fc60b0-eacd-447a-9a0f-650dbece2e0d" />
-3. <img width="851" height="884" alt="image" src="https://github.com/user-attachments/assets/6feb82e5-1d6d-438f-b513-224da7d27c20" />
+<img width="1013" height="891" alt="image" src="https://github.com/user-attachments/assets/3cff3589-65c6-476b-843e-1c6fb7bd0e0f" />
+<img width="846" height="889" alt="image" src="https://github.com/user-attachments/assets/c9fc60b0-eacd-447a-9a0f-650dbece2e0d" />
+<img width="851" height="884" alt="image" src="https://github.com/user-attachments/assets/6feb82e5-1d6d-438f-b513-224da7d27c20" />
 
 📄 Lisensi
 Proyek ini dilisensikan di bawah lisensi MIT. Bebas digunakan dan dimodifikasi untuk tujuan edukasi.
