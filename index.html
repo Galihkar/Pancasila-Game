@@ -196,7 +196,7 @@
         zone.appendChild(dragged);
         checkAll();
       } else {
-        showPopup(`Maaf, jawaban Anda Salah\n(${id} bukan untuk ${zone.dataset.slot})`, false);
+        showPopup(`Maaf, jawaban Anda Salah.\nAyo coba lagi.`, false);
       }
     });
   });
@@ -216,7 +216,7 @@
       if (dropped !== expected) valid = false;
     });
     if (valid) {
-      showPopup("Yeay anda benar", true);
+      showPopup("Horeeee, Kamu benar.\nSelamat.", true);
     }
   }
 </script>
