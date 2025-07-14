@@ -196,7 +196,7 @@
         zone.appendChild(dragged);
         checkAll();
       } else {
-        showPopup(`Anda Salah (${id} bukan untuk ${zone.dataset.slot})`, false);
+        showPopup(`Maaf, jawaban Anda Salah\n(${id} bukan untuk ${zone.dataset.slot})`, false);
       }
     });
   });
@@ -205,7 +205,7 @@
     popup.innerHTML = message.replace(/\n/g, '<br>');
     popup.className = 'popup ' + (success ? 'success' : 'error');
     popup.style.display = 'block';
-    setTimeout(() => popup.style.display = 'none', 2000);
+    setTimeout(() => popup.style.display = 'none', 3000);
   }
 
   function checkAll() {
