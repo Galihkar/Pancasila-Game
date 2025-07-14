@@ -84,19 +84,44 @@
       <div class="drop-slot" data-slot="sila1"></div>
     </div>
 
-    <div class="drag-area">
-      <img src="img/sila1.png" id="sila1" draggable="true">
-      <img src="img/sila2.png" id="sila2" draggable="true">
-      <img src="img/sila3.png" id="sila3" draggable="true">
-      <img src="img/sila4.png" id="sila4" draggable="true">
-      <img src="img/sila5.png" id="sila5" draggable="true">
-    </div>
+    <div class="drag-area" id="dragArea"></div>
   </div>
 
   <div id="popup" class="popup"></div>
 </div>
 
 <script>
+  const dragArea = document.getElementById('dragArea');
+  const silaImages = [
+    { id: 'sila1', src: 'img/sila1.png' },
+    { id: 'sila2', src: 'img/sila2.png' },
+    { id: 'sila3', src: 'img/sila3.png' },
+    { id: 'sila4', src: 'img/sila4.png' },
+    { id: 'sila5', src: 'img/sila5.png' },
+  ];
+
+  // Fisher-Yates Shuffle
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function renderShuffledImages() {
+    const shuffled = shuffleArray([...silaImages]);
+    shuffled.forEach(item => {
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.id = item.id;
+      img.draggable = true;
+      dragArea.appendChild(img);
+    });
+  }
+
+  renderShuffledImages();
+  
   const draggables = document.querySelectorAll('.drag-area img');
   const dropzones = document.querySelectorAll('.drop-slot');
   const popup = document.getElementById('popup');
