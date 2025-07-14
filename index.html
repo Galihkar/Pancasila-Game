@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pancasila</title>
+  <title>Game Drag & Drop Pancasila</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
     body {
-      padding: 10px;
+      padding: 20px;
       background: #f4f4f4;
     }
     .game-wrapper {
@@ -29,9 +29,7 @@
     }
     .drop-slot {
       position: absolute;
-      width: 120px;
-      height: 120px;
-/*      border: 2px dashed #666;*/
+      border: 2px dashed #666;
       border-radius: 8px;
       overflow: hidden;
     }
@@ -74,16 +72,16 @@
 </head>
 <body>
 <div class="container text-center">
-  <h3 class="mb-4">Susun Lambang Pancasila.</h3>
+  <h3 class="mb-4">Susun Lambang Pancasila</h3>
 
   <div class="game-wrapper">
     <div id="drop-area">
       <img src="img/perisai-kosong.png" id="tameng" alt="Perisai Kosong">
-      <div class="drop-slot" data-slot="sila1"></div>
       <div class="drop-slot" data-slot="sila2"></div>
       <div class="drop-slot" data-slot="sila3"></div>
       <div class="drop-slot" data-slot="sila4"></div>
       <div class="drop-slot" data-slot="sila5"></div>
+      <div class="drop-slot" data-slot="sila1"></div>
     </div>
 
     <div class="drag-area">
@@ -122,21 +120,32 @@
   };
 
   function positionSlots() {
-    const imgRect = tameng.getBoundingClientRect();
-    const areaRect = dropArea.getBoundingClientRect();
+    const width = tameng.offsetWidth;
+    const height = tameng.offsetHeight;
+    const size = width * 0.13; // ukuran slot 13% dari lebar tameng
 
     dropzones.forEach(zone => {
       const slot = zone.dataset.slot;
       const pos = slotPositions[slot];
-      const top = tameng.offsetHeight * pos.top;
-      const left = tameng.offsetWidth * pos.left;
-      zone.style.top = `${top}px`;
-      zone.style.left = `${left}px`;
+      zone.style.width = `${size}px`;
+      zone.style.height = `${size}px`;
+      zone.style.top = `${height * pos.top}px`;
+      zone.style.left = `${width * pos.left}px`;
     });
   }
 
-  window.addEventListener('load', positionSlots);
-  window.addEventListener('resize', positionSlots);
+  tameng.addEventListener('load', positionSlots);
+
+  const observer = new ResizeObserver(() => {
+    positionSlots();
+  });
+  observer.observe(tameng);
+
+  window.addEventListener('load', () => {
+    if (tameng.complete) {
+      positionSlots();
+    }
+  });
 
   draggables.forEach(el => {
     el.addEventListener('dragstart', e => {
@@ -156,11 +165,13 @@
         zone.innerHTML = '';
         dragged.style.width = '100%';
         dragged.style.height = '100%';
+        dragged.style.maxWidth = 'unset';
+        dragged.style.maxHeight = 'unset';
         dragged.style.objectFit = 'contain';
         zone.appendChild(dragged);
         checkAll();
       } else {
-        showPopup(`Maaf, jawaban kamu salah.`, false);
+        showPopup(`Maaf, jawaban kamu salah.\n Ayo coba lagi.`, false);
       }
     });
   });
@@ -169,7 +180,7 @@
     popup.innerHTML = message.replace(/\n/g, '<br>');
     popup.className = 'popup ' + (success ? 'success' : 'error');
     popup.style.display = 'block';
-    setTimeout(() => popup.style.display = 'none', 5000);
+    setTimeout(() => popup.style.display = 'none', 2000);
   }
 
   function checkAll() {
@@ -180,7 +191,7 @@
       if (dropped !== expected) valid = false;
     });
     if (valid) {
-      showPopup("Yeay, kalian hebat.", true);
+      showPopup("Yeay anda benar", true);
     }
   }
 </script>
