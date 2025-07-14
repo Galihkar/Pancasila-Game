@@ -74,7 +74,7 @@
 </head>
 <body>
 <div class="container text-center">
-  <marquee direction='left'><h3 class="mb-4">Susun Lambang Pancasila. Arrange the Pancasila Symbols. 排列国家象征。</h3></marquee>
+  <h3 class="mb-4">Susun Lambang Pancasila.</h3>
 
   <div class="game-wrapper">
     <div id="drop-area">
@@ -160,7 +160,7 @@
         zone.appendChild(dragged);
         checkAll();
       } else {
-        showPopup(`Maaf, jawaban kamu salah.\nSorry, your answer is wrong.\n抱歉，你的答案是错误的。`, false);
+        showPopup(`Maaf, jawaban kamu salah.`, false);
       }
     });
   });
@@ -180,7 +180,7 @@
       if (dropped !== expected) valid = false;
     });
     if (valid) {
-      showPopup("Yeay, kalian hebat.\nYeay, you guys are great.\n是的，你们太棒了。", true);
+      showPopup("Yeay, kalian hebat.", true);
     }
   }
 </script>
