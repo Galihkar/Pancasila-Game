@@ -29,7 +29,7 @@
     }
     .drop-slot {
       position: absolute;
-      border: 2px dashed #666;
+      /*border: 2px dashed #666;*/
       border-radius: 8px;
       overflow: hidden;
     }
@@ -85,11 +85,11 @@
     </div>
 
     <div class="drag-area">
+      <img src="img/sila1.png" id="sila1" draggable="true">
       <img src="img/sila2.png" id="sila2" draggable="true">
       <img src="img/sila3.png" id="sila3" draggable="true">
       <img src="img/sila4.png" id="sila4" draggable="true">
       <img src="img/sila5.png" id="sila5" draggable="true">
-      <img src="img/sila1.png" id="sila1" draggable="true">
     </div>
   </div>
 
@@ -112,10 +112,10 @@
   };
 
   const slotPositions = {
-    sila1: { top: 0.41, left: 0.423 },
-    sila2: { top: 0.48, left: 0.50 },
-    sila3: { top: 0.30, left: 0.50 },
-    sila4: { top: 0.30, left: 0.34 },
+    sila1: { top: 0.41, left: 0.43 },
+    sila2: { top: 0.48, left: 0.52 },
+    sila3: { top: 0.32, left: 0.52 },
+    sila4: { top: 0.32, left: 0.34 },
     sila5: { top: 0.48, left: 0.34 },
   };
 
@@ -171,7 +171,7 @@
         zone.appendChild(dragged);
         checkAll();
       } else {
-        showPopup(`Maaf, jawaban kamu salah.\n Ayo coba lagi.`, false);
+        showPopup(`Anda Salah (${id} bukan untuk ${zone.dataset.slot})`, false);
       }
     });
   });
