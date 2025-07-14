@@ -68,6 +68,20 @@
       border: 4px solid red;
       color: red;
     }
+    .animated-drop {
+      animation: fadeInZoom 0.4s ease-out;
+    }
+
+    @keyframes fadeInZoom {
+      from {
+        opacity: 0;
+        transform: scale(0.6);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 <body>
@@ -193,6 +207,7 @@
         dragged.style.maxWidth = 'unset';
         dragged.style.maxHeight = 'unset';
         dragged.style.objectFit = 'contain';
+        dragged.classList.add('animated-drop');
         zone.appendChild(dragged);
         checkAll();
       } else {
