@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game Drag & Drop Pancasila</title>
-  <link rel="icon" type="image/png" href="https://www.google.com/url?sa=i&url=https%3A%2F%2Fid.m.wikipedia.org%2Fwiki%2FBerkas%3AGaruda_Pancasila%2C_Coat_of_Arms_of_Indonesia.svg&psig=AOvVaw1R2uxSoVdKuHWK0whp9xZK&ust=1752636983093000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLDQ_tf3vY4DFQAAAAAdAAAAABAE" sizes="32x32" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
     body {
@@ -30,9 +29,9 @@
     }
     .drop-slot {
       position: absolute;
-      /*border: 2px dashed #666;*/
       border-radius: 8px;
       overflow: hidden;
+      touch-action: none;
     }
     .drag-area {
       display: flex;
@@ -46,6 +45,7 @@
       border-radius: 6px;
       background: #fff;
       padding: 4px;
+      touch-action: none;
     }
 
     .popup {
@@ -69,6 +69,7 @@
       border: 4px solid red;
       color: red;
     }
+
     .animated-drop {
       animation: fadeInZoom 0.4s ease-out;
     }
@@ -92,11 +93,11 @@
   <div class="game-wrapper">
     <div id="drop-area">
       <img src="img/perisai-kosong.png" id="tameng" alt="Perisai Kosong">
+      <div class="drop-slot" data-slot="sila1"></div>
       <div class="drop-slot" data-slot="sila2"></div>
       <div class="drop-slot" data-slot="sila3"></div>
       <div class="drop-slot" data-slot="sila4"></div>
       <div class="drop-slot" data-slot="sila5"></div>
-      <div class="drop-slot" data-slot="sila1"></div>
     </div>
 
     <div class="drag-area" id="dragArea"></div>
@@ -115,7 +116,6 @@
     { id: 'sila5', src: 'img/sila5.png' },
   ];
 
-  // Fisher-Yates Shuffle
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -132,12 +132,15 @@
       img.id = item.id;
       img.draggable = true;
       dragArea.appendChild(img);
+
+      img.addEventListener('touchstart', touchStart, { passive: true });
+      img.addEventListener('touchmove', touchMove, { passive: false });
+      img.addEventListener('touchend', touchEnd);
     });
   }
 
   renderShuffledImages();
-  
-  const draggables = document.querySelectorAll('.drag-area img');
+
   const dropzones = document.querySelectorAll('.drop-slot');
   const popup = document.getElementById('popup');
   const tameng = document.getElementById('tameng');
@@ -162,7 +165,7 @@
   function positionSlots() {
     const width = tameng.offsetWidth;
     const height = tameng.offsetHeight;
-    const size = width * 0.13; // ukuran slot 13% dari lebar tameng
+    const size = width * 0.13;
 
     dropzones.forEach(zone => {
       const slot = zone.dataset.slot;
@@ -175,22 +178,16 @@
   }
 
   tameng.addEventListener('load', positionSlots);
-
-  const observer = new ResizeObserver(() => {
-    positionSlots();
-  });
+  const observer = new ResizeObserver(() => positionSlots());
   observer.observe(tameng);
-
   window.addEventListener('load', () => {
-    if (tameng.complete) {
-      positionSlots();
-    }
+    if (tameng.complete) positionSlots();
   });
 
-  draggables.forEach(el => {
-    el.addEventListener('dragstart', e => {
+  document.addEventListener('dragstart', e => {
+    if (e.target.tagName === 'IMG' && e.target.parentElement === dragArea) {
       e.dataTransfer.setData("text", e.target.id);
-    });
+    }
   });
 
   dropzones.forEach(zone => {
@@ -202,26 +199,30 @@
       const expected = correct[zone.dataset.slot];
 
       if (id === expected) {
-        zone.innerHTML = '';
-        dragged.style.width = '100%';
-        dragged.style.height = '100%';
-        dragged.style.maxWidth = 'unset';
-        dragged.style.maxHeight = 'unset';
-        dragged.style.objectFit = 'contain';
-        dragged.classList.add('animated-drop');
-        zone.appendChild(dragged);
-        checkAll();
+        dropToSlot(zone, dragged);
       } else {
-        showPopup(`Maaf, jawaban Anda Salah.\nAyo coba lagi.`, false);
+        showPopup(`Anda Salah (${id} bukan untuk ${zone.dataset.slot})`, false);
       }
     });
   });
+
+  function dropToSlot(zone, dragged) {
+    zone.innerHTML = '';
+    dragged.style.width = '100%';
+    dragged.style.height = '100%';
+    dragged.style.maxWidth = 'unset';
+    dragged.style.maxHeight = 'unset';
+    dragged.style.objectFit = 'contain';
+    dragged.classList.add('animated-drop');
+    zone.appendChild(dragged);
+    checkAll();
+  }
 
   function showPopup(message, success = true) {
     popup.innerHTML = message.replace(/\n/g, '<br>');
     popup.className = 'popup ' + (success ? 'success' : 'error');
     popup.style.display = 'block';
-    setTimeout(() => popup.style.display = 'none', 3000);
+    setTimeout(() => popup.style.display = 'none', 2000);
   }
 
   function checkAll() {
@@ -232,8 +233,50 @@
       if (dropped !== expected) valid = false;
     });
     if (valid) {
-      showPopup("Horeeee, Kamu benar.\nSelamat.", true);
+      showPopup('Maaf, jawaban Anda Salah.\nAyo coba lagi.', true);
     }
+  }
+
+  // Touch Support
+  let touchItem = null;
+  function touchStart(e) {
+    touchItem = e.target;
+    touchItem.classList.add('touch-dragging');
+  }
+
+  function touchMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchItem.style.position = 'fixed';
+    touchItem.style.zIndex = 999;
+    touchItem.style.left = `${touch.clientX - touchItem.offsetWidth / 2}px`;
+    touchItem.style.top = `${touch.clientY - touchItem.offsetHeight / 2}px`;
+  }
+
+  function touchEnd(e) {
+    const rect = touchItem.getBoundingClientRect();
+    dropzones.forEach(zone => {
+      const zRect = zone.getBoundingClientRect();
+      const expected = correct[zone.dataset.slot];
+      if (
+        rect.left < zRect.right &&
+        rect.right > zRect.left &&
+        rect.top < zRect.bottom &&
+        rect.bottom > zRect.top
+      ) {
+        if (touchItem.id === expected) {
+          dropToSlot(zone, touchItem);
+        } else {
+          showPopup(`Horeeee, Kamu benar.\nSelamat.)`, false);
+        }
+      }
+    });
+    touchItem.style.position = '';
+    touchItem.style.left = '';
+    touchItem.style.top = '';
+    touchItem.style.zIndex = '';
+    touchItem.classList.remove('touch-dragging');
+    touchItem = null;
   }
 </script>
 </body>
