@@ -29,6 +29,7 @@
     }
     .drop-slot {
       position: absolute;
+      border: 2px dashed #666;
       border-radius: 8px;
       overflow: hidden;
       touch-action: none;
@@ -233,7 +234,7 @@
       if (dropped !== expected) valid = false;
     });
     if (valid) {
-      showPopup('Maaf, jawaban Anda Salah.\nAyo coba lagi.', true);
+      showPopup('Horeeee, Kamu benar.\nSelamat.', true);
     }
   }
 
@@ -267,7 +268,7 @@
         if (touchItem.id === expected) {
           dropToSlot(zone, touchItem);
         } else {
-          showPopup(`Horeeee, Kamu benar.\nSelamat.)`, false);
+          showPopup(`Maaf, jawaban Anda Salah.\nAyo coba lagi.`, false);
         }
       }
     });
