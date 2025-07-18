@@ -255,31 +255,31 @@
 
 function touchEnd(e) {
   const rect = touchItem.getBoundingClientRect();
-  let dropped = false;
+  let matched = false;
 
   dropzones.forEach(zone => {
     const zRect = zone.getBoundingClientRect();
-    const expected = correct[zone.dataset.slot];
-
     const isOverlapping =
       rect.left < zRect.right &&
       rect.right > zRect.left &&
       rect.top < zRect.bottom &&
       rect.bottom > zRect.top;
 
-    if (isOverlapping && !dropped) {
+    if (isOverlapping) {
+      const expected = correct[zone.dataset.slot];
+
       if (touchItem.id === expected) {
-        dropToSlot(zone, touchItem);
-        dropped = true;
+        dropToSlot(zone, touchItem); // gambar ditempel di slot
       } else {
-          showPopup(`Maaf, jawaban Anda Salah.\nAyo coba lagi.`, false);
-        dropped = true;
+        showPopup(`Maaf, jawaban Anda salah.\nAyo coba lagi.`, false);
       }
+
+      matched = true;
     }
   });
 
-  // Reset posisi jika tidak ditempatkan ke slot
-  if (!dropped) {
+  // Jika tidak overlap dengan slot mana pun, kembalikan ke posisi awal
+  if (!matched) {
     touchItem.style.position = '';
     touchItem.style.left = '';
     touchItem.style.top = '';
@@ -289,6 +289,7 @@ function touchEnd(e) {
   touchItem.classList.remove('touch-dragging');
   touchItem = null;
 }
+
 </script>
 </body>
 </html>
