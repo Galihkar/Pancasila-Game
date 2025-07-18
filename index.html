@@ -46,6 +46,7 @@
       background: #fff;
       padding: 4px;
       touch-action: none;
+      position: relative;
     }
 
     .popup {
@@ -214,6 +215,10 @@
     dragged.style.maxHeight = 'unset';
     dragged.style.objectFit = 'contain';
     dragged.classList.add('animated-drop');
+    dragged.style.position = 'static';
+    dragged.style.left = '';
+    dragged.style.top = '';
+    dragged.style.zIndex = '';
     zone.appendChild(dragged);
     checkAll();
   }
@@ -239,8 +244,12 @@
 
   // Touch Support
   let touchItem = null;
+  let originalPos = {};
+
   function touchStart(e) {
     touchItem = e.target;
+    const rect = touchItem.getBoundingClientRect();
+    originalPos = { x: rect.left, y: rect.top };
     touchItem.classList.add('touch-dragging');
   }
 
@@ -253,43 +262,46 @@
     touchItem.style.top = `${touch.clientY - touchItem.offsetHeight / 2}px`;
   }
 
-function touchEnd(e) {
-  const rect = touchItem.getBoundingClientRect();
-  let matched = false;
+  function touchEnd(e) {
+    const rect = touchItem.getBoundingClientRect();
+    let matched = false;
 
-  dropzones.forEach(zone => {
-    const zRect = zone.getBoundingClientRect();
-    const isOverlapping =
-      rect.left < zRect.right &&
-      rect.right > zRect.left &&
-      rect.top < zRect.bottom &&
-      rect.bottom > zRect.top;
+    dropzones.forEach(zone => {
+      const zRect = zone.getBoundingClientRect();
+      const isOverlapping =
+        rect.left < zRect.right &&
+        rect.right > zRect.left &&
+        rect.top < zRect.bottom &&
+        rect.bottom > zRect.top;
 
-    if (isOverlapping) {
-      const expected = correct[zone.dataset.slot];
+      if (isOverlapping) {
+        const expected = correct[zone.dataset.slot];
 
-      if (touchItem.id === expected) {
-        dropToSlot(zone, touchItem); // gambar ditempel di slot
-      } else {
-        showPopup(`Maaf, jawaban Anda salah.\nAyo coba lagi.`, false);
+        if (touchItem.id === expected) {
+          dropToSlot(zone, touchItem);
+        } else {
+          showPopup(`Maaf, jawaban Anda salah.\nAyo coba lagi.`, false);
+          resetTouchItem();
+        }
+
+        matched = true;
       }
+    });
 
-      matched = true;
+    if (!matched) {
+      resetTouchItem();
     }
-  });
 
-  // Jika tidak overlap dengan slot mana pun, kembalikan ke posisi awal
-  if (!matched) {
+    touchItem.classList.remove('touch-dragging');
+    touchItem = null;
+  }
+
+  function resetTouchItem() {
     touchItem.style.position = '';
     touchItem.style.left = '';
     touchItem.style.top = '';
     touchItem.style.zIndex = '';
   }
-
-  touchItem.classList.remove('touch-dragging');
-  touchItem = null;
-}
-
 </script>
 </body>
 </html>
